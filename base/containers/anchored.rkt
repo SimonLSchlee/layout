@@ -5,6 +5,7 @@
 
 (require racket/contract
          racket/match
+         racket/list
          "../types.rkt"
          "../mode.rkt")
 
@@ -27,8 +28,18 @@
 (define-syntax-rule (debug a ...)
   (begin (displayln (~a (quote a) ": " a)) ...))
 
+(define (definition? def)
+  (and (list? def)
+       (let ([f (first def)])
+         (and (procedure? f)
+              (procedure-arity-includes? f 1)))
+       (for/and ([a (in-list (rest def))])
+         (dir? a))))
+
+(define defs/c (listof definition?))
+
 (define/contract (anchored/fn #:size [size full-size] . anchor-defs)
-  (->* () (#:size bounds?) #:rest list? sizeable/c)
+  (->* () (#:size bounds?) #:rest defs/c sizeable/c)
   (λ (maxsize)
     (define center (pr2/ size pr2-two))
     (define msize  (pr2->pos size maxsize))
