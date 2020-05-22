@@ -15,4 +15,4 @@
   (path->ref (current-ref-path)))
 
 (define (path->ref path)
-  (path->join (map symbol->string (reverse path))))
+  (path->join (reverse path)))
