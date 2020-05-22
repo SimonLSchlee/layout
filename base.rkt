@@ -2,10 +2,7 @@
 
 "base/data.rkt"
 "base/types.rkt"
-
-"base/mode/mode.rkt"
-"base/mode/wrap.rkt"
-"base/mode/debug.rkt"
+"base/mode.rkt"
 
 "base/primitives.rkt"
 "base/containers.rkt"
