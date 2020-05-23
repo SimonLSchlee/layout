@@ -34,24 +34,24 @@
 (provide/define-method ui-draw   draw/c   piece-draw   pos)
 
 (provide container-draw
-         container
          leaf-layout
-         leaf
          nothing-draw
          nothing
-         modify)
+
+         (contract-out
+          [container (-> bounds/c layout/c piece?)]
+          [leaf      (-> bounds/c draw/c piece?)]
+          [modify    (->* (piece?)
+                          (#:bounds bounds/c
+                           #:layout layout/c
+                           #:draw   draw/c)
+                          piece?)]))
 
 (define (container-draw self pos)
   (ui-layout self pos ui-draw))
 
-(define (container bounds layout)
-  (piece bounds layout container-draw))
-
 (define (leaf-layout self pos cb)
   (void))
-
-(define (leaf bounds draw)
-  (piece bounds leaf-layout draw))
 
 (define (nothing-draw self pos)
   (void))
@@ -60,6 +60,12 @@
   (piece (λ (self) (bounds (pixel 0) (pixel 0)))
          leaf-layout
          nothing-draw))
+
+(define (container bounds layout)
+  (piece bounds layout container-draw))
+
+(define (leaf bounds draw)
+  (piece bounds leaf-layout draw))
 
 (define (modify p
                 #:bounds [bounds (piece-bounds p)]
