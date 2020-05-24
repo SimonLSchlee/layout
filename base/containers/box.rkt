@@ -31,8 +31,8 @@
     (values (cons piece lst)
             (pr2- remaining consumed))))
 
-(define (box-container axis bounds-op result-op)
-  (λ children
+(define (box-container axis extend-op max-op result-op)
+  (λ (#:min [min #f] . children)
     (define dir/pr2 (axis->dir/pr2 axis))
     (define/contract (box-sizeable size)
       sizeable/c
@@ -40,10 +40,14 @@
       (define child-pieces (elements->pieces size axis children))
       (container
        (λ (self)
-         (for/fold ([extend pr-0]
-                    #:result (result-op extend))
+         (for/fold ([extend   pr-0]
+                    [max-size 0]
+                    #:result (result-op extend
+                                        (if min (pixel max-size) (ratio 1))))
                    ([c (in-list child-pieces)])
-           (pr+ extend (bounds-op (ui-bounds c)))))
+           (define b (ui-bounds c))
+           (values (pr+ extend (extend-op b))
+                   (max max-size (pixelratio-pixel (max-op b))))))
        (λ (self pos callback)
          (for/fold ([pos (pos->pr2 pos)])
                    ([c (in-list child-pieces)])
@@ -52,9 +56,9 @@
            new-pos))))
     box-sizeable))
 
-(define (hbox-result extend)  (bounds extend (ratio 1)))
-(define (vbox-result extend)  (bounds (ratio 1) extend))
+(define (hbox-result extend max)  (bounds extend max))
+(define (vbox-result extend max)  (bounds max extend))
 
-(define hbox (box-container 'h vec2-x hbox-result))
-(define vbox (box-container 'v vec2-y vbox-result))
+(define hbox (box-container 'h vec2-x vec2-y hbox-result))
+(define vbox (box-container 'v vec2-y vec2-x vbox-result))
 
