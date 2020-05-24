@@ -28,4 +28,4 @@
   (define lines (string-split (ref/string text) "\n"))
   (match lines
     [(list single-line) (line single-line)]
-    [(? list?)          (apply vbox (map line lines))]))
+    [(? list?)          (apply vbox #:min #t (map line lines))]))
