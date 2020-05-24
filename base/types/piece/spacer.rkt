@@ -19,7 +19,7 @@
 (define/contract (spacer->piece spacer axis)
   (-> spacer? axis/c any/c)
   (define bounds (spacer->bounds spacer axis))
-  (modify nothing #:bounds (λ (self) bounds)))
+  (modify #:bounds (λ (self) bounds)))
 
 (define (spacer->bounds spacer axis)
   (match axis

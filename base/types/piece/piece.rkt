@@ -35,14 +35,16 @@
 
 (provide container-draw
          leaf-layout
-         nothing-draw
-         nothing
+         nothing-piece-bounds
+         nothing-piece-draw
+         nothing-piece
 
          (contract-out
           [container (-> bounds/c layout/c piece?)]
           [leaf      (-> bounds/c draw/c piece?)]
-          [modify    (->* (piece?)
-                          (#:bounds bounds/c
+          [modify    (->* ()
+                          (piece?
+                           #:bounds bounds/c
                            #:layout layout/c
                            #:draw   draw/c)
                           piece?)]))
@@ -53,13 +55,16 @@
 (define (leaf-layout self pos cb)
   (void))
 
-(define (nothing-draw self pos)
+(define (nothing-piece-bounds self)
+  (bounds (pixel 0) (pixel 0)))
+
+(define (nothing-piece-draw self pos)
   (void))
 
-(define nothing
-  (piece (λ (self) (bounds (pixel 0) (pixel 0)))
+(define nothing-piece
+  (piece nothing-piece-bounds
          leaf-layout
-         nothing-draw))
+         nothing-piece-draw))
 
 (define (container bounds layout)
   (piece bounds layout container-draw))
@@ -67,7 +72,7 @@
 (define (leaf bounds draw)
   (piece bounds leaf-layout draw))
 
-(define (modify p
+(define (modify [p nothing-piece]
                 #:bounds [bounds (piece-bounds p)]
                 #:layout [layout (piece-layout p)]
                 #:draw   [draw   (piece-draw p)])

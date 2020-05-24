@@ -6,7 +6,6 @@
 
 (define (rect width height)
   (λ (size)
-    (modify nothing
-            #:bounds
+    (modify #:bounds
             (λ (self)
               (bounds width height)))))
