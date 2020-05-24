@@ -21,10 +21,10 @@
                 (match-define (vec2 x y) pos)
 
                 (match-define (vec2 sw sh) size)
-                (draw-outline dc x y sw sh size-color 'dot)
+                (draw-outline/color+style dc x y sw sh size-color 'dot)
 
                 (match-define (vec2 w h) (pr2->pos (ui-bounds self) size))
-                (draw-outline dc x y w h bounds-color 'solid))
+                (draw-outline/color+style dc x y w h bounds-color 'solid))
 
               (ui-draw piece pos)))))
 

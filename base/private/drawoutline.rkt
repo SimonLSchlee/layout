@@ -1,13 +1,20 @@
 #lang racket/base
 
-(provide draw-outline)
+(provide draw-outline
+         draw-outline/color+style)
 
 (require racket/draw
          racket/class)
 
 
 (define invisible    (make-color 0 0 0 0))
-(define (draw-outline dc x y w h color style)
+(define (draw-outline dc x y w h)
+  (define brush (send dc get-brush))
+  (send dc set-brush invisible 'solid)
+  (send dc draw-rectangle x y w h)
+  (send dc set-brush brush))
+
+(define (draw-outline/color+style dc x y w h color style)
   (define pen   (send dc get-pen))
   (define brush (send dc get-brush))
   (send dc set-brush invisible 'solid)
