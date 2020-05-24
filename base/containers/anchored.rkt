@@ -43,15 +43,24 @@
   (λ (maxsize)
     (define center (pr2/ size pr2-two))
     (define msize  (pr2->pos size maxsize))
+
+    (define (calc-location child-sizeable parent-anchor-dir child-anchor-dir msize)
+      (define child-piece  (apply-wrapper child-sizeable msize))
+      (define child-center (piece->center child-piece))
+      (define child-pos    (anchors->pos child-center parent-anchor-dir child-anchor-dir))
+      (cons child-piece (pr2->pos child-pos msize)))
+
+    (define (anchors->pos child-center parent-anchor-dir child-anchor-dir)
+      (define parent-anchor (get-anchor-point center parent-anchor-dir))
+      (define child-anchor  (get-anchor-point child-center child-anchor-dir))
+      (define child-pos     (pr2- parent-anchor child-anchor))
+      child-pos)
+
     (define lst
       (for/list ([def (in-list anchor-defs)])
-        (match-define (list child-sizeable parent-anchor-dir child-anchor-dir) def)
-        (define child-piece   (apply-wrapper child-sizeable msize))
-        (define parent-anchor (get-anchor-point center parent-anchor-dir))
-        (define child-center  (piece->center child-piece))
-        (define child-anchor  (get-anchor-point child-center child-anchor-dir))
-        (define child-pos     (pr2- parent-anchor child-anchor))
-        (cons child-piece (pr2->pos child-pos msize))))
+        (match def
+          [(list child-sizeable parent-anchor-dir child-anchor-dir)
+           (calc-location child-sizeable parent-anchor-dir child-anchor-dir msize)])))
 
     (container (λ (self)
                  size)
