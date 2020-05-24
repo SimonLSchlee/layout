@@ -17,7 +17,7 @@
 
 (define/contract (image url
                         #:size [size full-size]
-                        #:mode [mode 'inset])
+                        #:mode [mode 'preserve])
   (->* (string/ref?) (#:size bounds? #:mode symbol?) sizeable/c)
   (define uri (ref/url/picture url))
   (λ (maxsize)
