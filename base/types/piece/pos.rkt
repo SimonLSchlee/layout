@@ -13,10 +13,17 @@
 
 (define-vec2-op-provide/definer provide/define-pos-op pos?)
 
-(provide/define-pos-op pos+ + vec2)
-(provide/define-pos-op pos- - vec2)
-(provide/define-pos-op pos* * vec2)
-(provide/define-pos-op pos/ / vec2)
+(provide/define-pos-op pos+    +   vec2)
+(provide/define-pos-op pos-    -   vec2)
+(provide/define-pos-op pos*    *   vec2)
+(provide/define-pos-op pos/    /   vec2)
+(provide/define-pos-op pos/abs abs vec2)
+(provide/define-pos-op pos/min min vec2)
+(provide/define-pos-op pos/max max vec2)
+
+(provide/define-pos-op pos>= >= and)
+(provide/define-pos-op pos<= <= and)
+
 
 (define (pos->pr2 pos)
   (pr2 (pixel (vec2-x pos))

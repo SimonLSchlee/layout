@@ -3,7 +3,7 @@
 (provide (all-defined-out))
 
 (require racket/contract
-         "private/parameter.rkt"
+         "../private/parameter.rkt"
          "generator.rkt")
 
 (define mode/c (or/c 'ref 'generate))

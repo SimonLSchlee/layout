@@ -2,7 +2,7 @@
 
 (require racket/contract
          "../types.rkt"
-         "private/parameter.rkt")
+         "../private/parameter.rkt")
 
 (provide wrapper/c
          no-wrap

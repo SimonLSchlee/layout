@@ -4,7 +4,7 @@
 
 (require racket/contract
          "../data.rkt"
-         "private/parameter.rkt")
+         "../private/parameter.rkt")
 
 (define value-generator/c (-> ref/kinds? reference? ref/kind/c))
 (define-named-parameter current-value-generator #f)

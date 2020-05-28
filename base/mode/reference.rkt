@@ -3,7 +3,7 @@
 (provide (all-defined-out))
 
 (require "../data.rkt"
-         "private/parameter.rkt")
+         "../private/parameter.rkt")
 
 (define-guarded-parameter current-ref-path ref-path? null)
 

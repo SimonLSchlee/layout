@@ -2,7 +2,7 @@
 
 (require racket/contract
          "../data.rkt"
-         "private/parameter.rkt"
+         "../private/parameter.rkt"
          "reference.rkt")
 
 (define patch-accumulator/c (-> reference? ref/kind/c any/c))

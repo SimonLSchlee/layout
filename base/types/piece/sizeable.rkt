@@ -3,6 +3,7 @@
 (require racket/contract
          "../pixelratio.rkt"
          "pos.rkt"
+         "size.rkt"
          "bounds.rkt"
          "piece.rkt"
          "spacer.rkt")
@@ -17,7 +18,7 @@
           [elements->sizeables (-> elements/c axis/c sizeables/c)]))
 
 ;; maxbounds -> piece
-(define sizeable/c  (-> pos? piece?))
+(define sizeable/c  (-> size? piece?))
 (define sizeables/c (listof sizeable/c))
 (define element/c   (or/c spacer? sizeable/c))
 (define elements/c  (listof element/c))
