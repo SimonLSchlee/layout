@@ -1,13 +1,15 @@
 #lang racket/base
 
-(provide layout-thk/c
-         layout-apply)
-
 (require racket/contract
          racket/class
+         "../data.rkt"
          "../types.rkt"
          "current.rkt"
          "wrap.rkt")
+
+(provide layout-thk/c
+         (contract-out
+          [layout-apply (-> layout-thk/c dc/c data/c any/c)]))
 
 (define layout-thk/c (-> any/c))
 
