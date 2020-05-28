@@ -23,5 +23,5 @@
 
 (define (spacer->bounds spacer axis)
   (match axis
-    ['h (bounds (spacer-amount spacer) (ratio 1))]
-    ['v (bounds (ratio 1) (spacer-amount spacer))]))
+    ['h (bounds (spacer-amount spacer) (pixel 0))]
+    ['v (bounds (pixel 0) (spacer-amount spacer))]))
