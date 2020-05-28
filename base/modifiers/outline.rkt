@@ -3,15 +3,11 @@
 (provide outline)
 
 (require racket/contract
-         racket/draw
          racket/class
          racket/match
          "../types.rkt"
          "../mode.rkt"
          "../private/drawoutline.rkt")
-
-(define color/c (is-a?/c color%))
-(define black   (make-color 0 0 0))
 
 (define/contract (outline content)
   (-> sizeable/c sizeable/c)
@@ -22,7 +18,7 @@
             (λ (self pos)
               (ui-draw piece pos)
 
-              (define dc (current-dc))
+              (define bounds (ui-bounds self))
               (match-define (vec2 x y) pos)
-              (match-define (vec2 w h) (pr2->pos (ui-bounds self) size))
-              (draw-outline dc x y w h)))))
+              (match-define (vec2 w h) (pr2->pos bounds size))
+              (draw-outline (current-dc) x y w h)))))
