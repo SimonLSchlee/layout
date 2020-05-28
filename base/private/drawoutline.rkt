@@ -18,7 +18,7 @@
   (define pen   (send dc get-pen))
   (define brush (send dc get-brush))
   (send dc set-brush invisible 'solid)
-  (send dc set-pen color 2 style)
+  (send dc set-pen color 1 style)
   (send dc draw-rectangle x y w h)
   (send dc set-pen pen)
   (send dc set-brush brush))

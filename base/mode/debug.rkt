@@ -29,4 +29,4 @@
               (ui-draw piece pos)))))
 
 (define size-color   (make-color 220 0 0))
-(define bounds-color (make-color 0 0 0))
+(define bounds-color (make-color 0 220 220))
