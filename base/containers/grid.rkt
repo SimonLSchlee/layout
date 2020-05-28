@@ -22,7 +22,8 @@
     piece))
 
 (define (bounds-policy/raise piece size)
-  (check-bounds piece size))
+  (check-bounds piece size)
+  piece)
 
 (define-named-parameter current-bounds-policy-default bounds-policy/raise)
 
