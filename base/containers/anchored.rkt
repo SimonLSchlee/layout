@@ -24,10 +24,6 @@
   (pr2->pos (piece->center piece)
             size))
 
-(require racket/format)
-(define-syntax-rule (debug a ...)
-  (begin (displayln (~a (quote a) ": " a)) ...))
-
 (define (definition? def)
   (and (list? def)
        (let ([f (first def)])
