@@ -15,7 +15,7 @@
             #:bounds
             (λ (self)
               (match-define (vec2 width height) size)
-              (values width height))
+              (bounds (pixel width) (pixel height)))
             #:draw
             (λ (self pos)
               (define dc (current-dc))
