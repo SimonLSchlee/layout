@@ -9,10 +9,10 @@
 
 (define (ref/absolute ref)
   (define abs-path (cons ref (current-ref-path)))
-  (path->ref abs-path))
+  (reverse-path->ref abs-path))
 
 (define (current-ref)
-  (path->ref (current-ref-path)))
+  (reverse-path->ref (current-ref-path)))
 
-(define (path->ref path)
-  (path->join (reverse path)))
+(define (reverse-path->ref path)
+  (path->ref (reverse path)))

@@ -18,7 +18,7 @@
          (ref/absolute ref)))
 
 (define/contract (resolve-reference ref [fail (λ () (err ref))])
-  (->* (reference?) ((-> any/c)) any/c)
+  (->* (pathish?) ((-> any/c)) any/c)
   (define (resolve current path return)
     (if (empty? path)
         current
@@ -29,7 +29,7 @@
           (define val (hash-ref current f (λ () (return (fail)))))
           (resolve val r return))))
 
-  (define path (path->split ref))
+  (define path (pathish->path ref))
   (let/ec return
     (resolve (current-data) path return)))
 

@@ -11,8 +11,5 @@
 (define ref/kinds? (vectorof ref/kind?))
 (define ref-op/c   (-> ref/kinds? ref/c ref/kind/c))
 
-(define ref-path/c       (listof reference?))
-(define (ref-path? v)    (ref-path/c v))
-
 (define string/ref? (or/c reference? string?))
 
