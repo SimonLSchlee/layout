@@ -8,11 +8,12 @@
                        [ratio      (-> real? pixelratio?)]
                        [scalar->pr (-> real? pixelratio?)]
                        [pr->pixel  (-> pixelratio? real? real?)])
+         (rename-out [pixelratio? pr?])
          pr-0 pr-1 pr-2)
 
 ;; pixel + ratio * x
 ;; a small algebra for calculating pixels and ratios
-(struct pixelratio (pixel ratio) #:prefab)
+(struct pixelratio (pixel ratio) #:transparent)
 (define (pixel p) (pixelratio p 0))
 (define (ratio r) (pixelratio 0 r))
 
