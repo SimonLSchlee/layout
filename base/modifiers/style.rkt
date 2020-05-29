@@ -47,7 +47,7 @@
   (define s3 (if brush (apply-brush brush) s2))
   (define apply-style s3)
   (λ (size)
-    (define piece (apply-wrapper content size))
+    (define piece (apply-style (λ () (apply-wrapper content size))))
     (modify piece
             #:bounds (λ (self)     (apply-style (λ () (ui-bounds piece))))
             #:draw   (λ (self pos) (apply-style (λ () (ui-draw piece pos)))))))
