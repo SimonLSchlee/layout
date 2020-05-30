@@ -30,12 +30,14 @@
 (define bounds-policy/c (-> piece? size? piece?))
 
 (define/contract (grid #:size [size full-size]
+                       #:spacing [spacing pr2-zero]
                        #:stretchable-width  [swidth #f]
                        #:stretchable-height [sheight #f]
                        #:bounds-policy [bounds-policy (current-bounds-policy-default)]
                        . data)
   (->* ()
        (#:size bounds?
+        #:spacing pr2?
         #:stretchable-width  boolean?
         #:stretchable-height boolean?
         #:bounds-policy bounds-policy/c)
@@ -49,50 +51,61 @@
       (define row-heights   (make-vector rows))
       (define column-widths (make-vector columns))
 
-      (for/fold ([y 0])
+      (define abs-spacing   (pr2->pos spacing max-size))
+      (match-define (vec2 sx sy) abs-spacing)
+
+      (for/fold ([y (- sy)]
+                 #:result (void))
                 ([(row ri) (in-indexed (in-list data))])
-        (for/fold ([x 0])
+        (define y0 (+ y sy))
+        (for/fold ([x (- sx)]
+                   #:result (void))
                   ([(cell ci) (in-indexed (in-list row))])
-          (define cell-pos  (pos x y))
+          (define x0 (+ x sx))
+          (define cell-pos  (pos x0 y0))
           (define remaining (pos/max vec2-zero (pos- max-size cell-pos)))
           (match-define (vec2 bx by) (ui-bounds (apply-wrapper cell remaining)))
           (define px (pixelratio-pixel bx))
           (define py (pixelratio-pixel by))
           (vector-accum row-heights   ri py)
           (vector-accum column-widths ci px)
-          (+ x px))
-        (+ y (vector-ref row-heights ri)))
+          (+ x0 px))
+        (+ y0 (vector-ref row-heights ri)))
 
-      (define min-size-w     (sum column-widths))
-      (define min-size-h     (sum row-heights))
-      (define min-size       (pos min-size-w min-size-h))
+      (define total-spacing  (pos* abs-spacing (vec2 (spaces columns) (spaces rows))))
+      (define min-size       (pos+ total-spacing
+                                   (pos (sum column-widths)
+                                        (sum row-heights))))
+
       (define remaining-size (pos/max vec2-zero (pos- max-size min-size)))
       (define extra-size     (pos/ remaining-size (pos columns rows)))
       (match-define (vec2 extra-x extra-y) (pos* extra-size stretch))
 
       (define lst
         (for/fold ([lst null]
-                   [y 0]
+                   [y (- sy)]
                    #:result lst)
                   ([row        (in-list data)]
                    [min-height (in-vector row-heights)])
+          (define y0     (+ y sy))
           (define height (+ min-height extra-y))
           (define new-lst
             (for/fold ([lst lst]
-                       [x 0]
+                       [x (- sx)]
                        #:result lst)
                       ([cell (in-list row)]
                        [min-width (in-vector column-widths)])
+              (define x0          (+ x sx))
               (define width       (+ min-width extra-x))
               (define cell-size   (vec2 width height))
               (define child-piece (apply-wrapper cell cell-size))
               (define fixed-piece (bounds-policy child-piece cell-size))
-              (values (cons (cons fixed-piece (pos x y)) lst)
-                      (+ x width))))
+              (values (cons (cons fixed-piece (pos x0 y0)) lst)
+                      (+ x0 width))))
           (values new-lst
-                  (+ y height))))
+                  (+ y0 height))))
 
-      (container (λ (self) (bounds (pixel min-size-w) (pixel min-size-h)))
+      (container (λ (self) (pos->pr2 min-size))
                  (λ (self pos callback)
                    (for ([loc (in-list lst)])
                      (match-define (cons child child-pos) loc)
@@ -111,3 +124,5 @@
 
 (define (sum v)
   (for/sum ([x (in-vector v)]) x))
+
+(define (spaces x) (max 0 (sub1 x)))
