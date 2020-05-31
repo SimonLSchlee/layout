@@ -4,6 +4,7 @@
          racket/match
          racket/list
          racket/class
+         racket/draw
          "../types.rkt"
          "../mode.rkt"
          "../utils/bounds.rkt"
@@ -14,7 +15,18 @@
          "../private/color.rkt"
          "box.rkt")
 
-(provide grid
+(provide (contract-out
+          [grid
+           (->* ()
+                (#:size bounds?
+                 #:spacing pr2?
+                 #:stretchable-width  boolean?
+                 #:stretchable-height boolean?
+                 #:bounds-policy bounds-policy/c
+                 #:draw-before grid-draw-effect/c
+                 #:draw-after  grid-draw-effect/c)
+                #:rest (listof (listof sizeable/c))
+                any/c)])
 
          bounds-policy/c
          (contract-out
@@ -24,7 +36,11 @@
 
          grid-draw-effect/c
          (contract-out
-          [draw-grid-lines        grid-draw-effect/c]
+          [draw-grid-lines
+           (->* ()
+                (#:vertical boolean?
+                 #:horizontal boolean?)
+                grid-draw-effect/c)]
           [draw-column-background (-> brush/c brush/c grid-draw-effect/c)]
           [draw-row-background    (-> brush/c brush/c grid-draw-effect/c)]))
 
@@ -48,24 +64,14 @@
 (define brush/c (is-a?/c brush%))
 (define grid-draw-effect/c (or/c #f (-> piece? pos? info/c any/c)))
 
-(define/contract (grid #:size [size full-size]
-                       #:spacing [spacing pr2-zero]
-                       #:stretchable-width  [swidth #f]
-                       #:stretchable-height [sheight #f]
-                       #:bounds-policy [bounds-policy (current-bounds-policy-default)]
-                       #:draw-before [draw-before #f]
-                       #:draw-after  [draw-after #f]
-                       . data)
-  (->* ()
-       (#:size bounds?
-        #:spacing pr2?
-        #:stretchable-width  boolean?
-        #:stretchable-height boolean?
-        #:bounds-policy bounds-policy/c
-        #:draw-before grid-draw-effect/c
-        #:draw-after  grid-draw-effect/c)
-       #:rest (listof (listof sizeable/c))
-       any/c)
+(define (grid #:size [size full-size]
+              #:spacing [spacing pr2-zero]
+              #:stretchable-width  [swidth #f]
+              #:stretchable-height [sheight #f]
+              #:bounds-policy [bounds-policy (current-bounds-policy-default)]
+              #:draw-before [draw-before #f]
+              #:draw-after  [draw-after #f]
+              . data)
   (define stretch (pos (if swidth 1 0) (if sheight 1 0)))
   (λ (max-size)
     (define rows    (length data))
@@ -193,22 +199,26 @@
   (define hw2 (vec2 hw hw))
   (pos/max vec2-zero (pos- size hw2)))
 
-(define (draw-grid-lines self pos info)
+(define ((draw-grid-lines #:vertical   [vertical #t]
+                          #:horizontal [horizontal #t])
+         self pos info)
   (define-values (columns rows) (info 'grid))
 
   (define dc (current-dc))
   (define size (info 'size))
   (match-define (vec2 xs ys) (size->adjusted-size dc size))
 
-  (for ([c (in-list columns)])
-    (define start (pos+ pos (vec2 c 0)))
-    (define end   (pos+ pos (vec2 c ys)))
-    (send dc draw-line (vec2-x start) (vec2-y start) (vec2-x end) (vec2-y end)))
+  (when vertical
+    (for ([c (in-list columns)])
+      (define start (pos+ pos (vec2 c 0)))
+      (define end   (pos+ pos (vec2 c ys)))
+      (send dc draw-line (vec2-x start) (vec2-y start) (vec2-x end) (vec2-y end))))
 
-  (for ([r (in-list rows)])
-    (define start (pos+ pos (vec2 0  r)))
-    (define end   (pos+ pos (vec2 xs r)))
-    (send dc draw-line (vec2-x start) (vec2-y start) (vec2-x end) (vec2-y end))))
+  (when horizontal
+    (for ([r (in-list rows)])
+      (define start (pos+ pos (vec2 0  r)))
+      (define end   (pos+ pos (vec2 xs r)))
+      (send dc draw-line (vec2-x start) (vec2-y start) (vec2-x end) (vec2-y end)))))
 
 (define (((draw-background select next-proc corner-proc) b1 b2) self pos info)
   (define extents      (info select))
