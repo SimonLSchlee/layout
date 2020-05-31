@@ -2,6 +2,7 @@
 
 (provide style
          make-font
+         make-color
          get-pen
          get-brush)
 
