@@ -3,11 +3,10 @@
 (provide draw-outline
          draw-outline/color+style)
 
-(require racket/draw
-         racket/class)
+(require racket/class
+         "color.rkt")
 
 
-(define invisible    (make-color 0 0 0 0))
 (define (draw-outline dc x y w h)
   (define brush (send dc get-brush))
   (send dc set-brush invisible 'solid)
