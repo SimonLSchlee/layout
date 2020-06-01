@@ -2,7 +2,8 @@
 
 (define collection "layout")
 (define deps
-  (list "draw-lib"
+  (list "base"
+        "draw-lib"
         "pict-lib"
         "reprovide-lang-lib"))
 
