@@ -37,12 +37,3 @@
             (define x2 (+ x (/ pw 2)))
             (define y2 (+ y (max 0 (- h pw))))
             (send dc draw-line x2 y x2 y2)))))
-
-
-(module+ main
-  (require layout/interactive
-           "../modifiers/style.rkt")
-
-  (define thick (style #:pen (get-pen (make-color 120 120 0) 8 'solid)))
-  (interact-gui (vec2 800 800) (thick horizontal-line))
-  (interact-gui (vec2 800 800) (thick vertical-line)))
