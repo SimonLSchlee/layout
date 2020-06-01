@@ -11,3 +11,5 @@
 (define build-deps '("racket-doc"
                      "rackunit-doc"
                      "scribble-lib"))
+
+(define pkg-authors '("schlee.simon@gmail.com"))
