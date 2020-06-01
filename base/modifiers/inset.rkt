@@ -39,11 +39,11 @@
   (require rackunit/chk
            "../primitives/rect.rkt")
 
-  (define size (pr2 (pixel 100) (pixel 100)))
+  (define size (vec2 100 100))
 
   (define (test expected content)
     (define offset (pr2 (pixel 10) (pixel 10)))
-    (define layout (inset offset content))
+    (define layout (inset #:size offset content))
     (define piece  (layout size))
     (define bounds (ui-bounds piece))
     (chk #t (pr2= expected bounds)))
