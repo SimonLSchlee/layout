@@ -24,10 +24,16 @@
         current
         (let ([f (first path)]
               [r (rest path)])
-          (unless (hash? current)
-            (return (fail)))
-          (define val (hash-ref current f (λ () (return (fail)))))
-          (resolve val r return))))
+          (match current
+            [(? hash?)
+             (define val (hash-ref current f (λ () (return (fail)))))
+             (resolve val r return)]
+            [(? list?)
+             (define val
+               (with-handlers ([exn:fail:contract? (λ (e) (return (fail)))])
+                 (list-ref current f)))
+             (resolve val r return)]
+            [_ (return (fail))]))))
 
   (define path (pathish->path ref))
   (let/ec return
